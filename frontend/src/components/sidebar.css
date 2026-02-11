@@ -1,0 +1,124 @@
+/* -------------------- SIDEBAR BASE -------------------- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px; /* hidden by default */
+  width: 300px;
+  max-width: 80%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(12px);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: right 0.3s ease;
+  z-index: 200;
+  color: #f0f0f0;
+}
+
+/* Open state */
+.sidebar.open {
+  right: 0;
+}
+
+/* -------------------- HEADER -------------------- */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 10px;
+}
+
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #ffd700;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.close-btn:hover {
+  color: #ff4c4c;
+  transform: scale(1.2);
+}
+
+/* -------------------- CONTENT -------------------- */
+.sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.sidebar-content h4 {
+  margin: 0;
+  margin-bottom: 5px;
+  font-size: 1.1rem;
+  color: #00c6ff;
+}
+
+/* File list */
+.sidebar-content ul {
+  list-style: none;
+  padding-left: 10px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sidebar-content li {
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: rgba(255,255,255,0.05);
+  transition: 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-content li:hover {
+  background-color: rgba(255,255,255,0.2);
+  transform: translateX(5px);
+  color: #ffd700;
+}
+
+.sidebar-content p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+}
+
+/* -------------------- SCROLLBAR -------------------- */
+.sidebar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-content::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+}
+
+.sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 3px;
+}
+
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 80%;
+    padding: 15px;
+  }
+}

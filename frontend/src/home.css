@@ -1,0 +1,147 @@
+/* -------------------- BODY / GENERAL -------------------- */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(-45deg, #1a2a6c, #b21f1f, #fdbb2d, #00c6ff);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  color: #f0f0f0;
+}
+
+/* Gradient animation */
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* -------------------- NAVBAR -------------------- */
+.navbar.first {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar.first .logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.navbar.first button {
+  margin-left: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  cursor: pointer;
+  transition: 0.3s ease;
+  opacity: 0.8;
+}
+
+.navbar.first button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+  opacity: 1;
+}
+
+.navbar.first button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.navbar.first button:disabled {
+  cursor: not-allowed;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+}
+
+/* -------------------- CONTAINER -------------------- */
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* -------------------- CARDS -------------------- */
+.card {
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.5);
+}
+
+.card h1, .card h2, .card h3 {
+  margin-top: 0;
+  color: #ffd700;
+}
+
+/* -------------------- CARDS CONTAINER -------------------- */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+/* Feature & Usage Cards */
+.feature-card, .usage-card, .header-card {
+  flex: 1 1 250px;
+  min-width: 220px;
+  padding: 25px;
+  text-align: center;
+}
+
+.feature-card p, .usage-card p {
+  color: #f0f0f0;
+  font-size: 0.95rem;
+  margin-top: 10px;
+}
+
+/* -------------------- FOOTER -------------------- */
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 40px;
+  background-color: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  font-size: 0.9rem;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* -------------------- RESPONSIVE -------------------- */
+@media screen and (max-width: 768px) {
+  .navbar.first {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar.first button {
+    margin-top: 10px;
+    margin-left: 0;
+  }
+
+  .cards-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}

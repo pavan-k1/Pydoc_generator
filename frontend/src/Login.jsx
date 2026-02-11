@@ -7,16 +7,29 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // ✅ Simple local check (replace with backend call if needed)
-    if (username === "admin" && password === "1234") {
-      localStorage.setItem("isAuthenticated", "true");
-      localStorage.setItem("username", username); // ✅ store the username
-      navigate("/home"); // redirect to home page
-    } else {
-      alert("Invalid credentials");
+    try {
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("isAuthenticated", "true");
+        navigate("/home");
+      } else {
+        alert(data.msg || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Server error. Please try again.");
     }
   };
 
@@ -49,6 +62,17 @@ const Login = () => {
             Login
           </button>
         </form>
+
+        {/* ✅ Register Link Added */}
+        <p style={{ marginTop: "15px" }}>
+          Don’t have an account?{" "}
+          <span
+            style={{ color: "#214abb", cursor: "pointer", fontWeight: "500" }}
+            onClick={() => navigate("/register")}
+          >
+            Register
+          </span>
+        </p>
       </div>
     </div>
   );

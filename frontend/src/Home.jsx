@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import App from "./App";
-import "./style.css";
+import "./home.css";
 
 const Home = () => {
   const [activePage, setActivePage] = useState("home"); // 'home' or 'docstring'

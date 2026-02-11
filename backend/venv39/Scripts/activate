@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\Dell\OneDrive\Documents\Infosys_Internship\docstring_generator\backend\venv39"
+VIRTUAL_ENV="C:\Users\Dell\OneDrive\Documents\Infosys_Internship\docstring_generator\Pydoc_generator\backend\venv39"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

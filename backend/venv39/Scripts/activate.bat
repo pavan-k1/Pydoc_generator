@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\Dell\OneDrive\Documents\Infosys_Internship\docstring_generator\backend\venv39
+set VIRTUAL_ENV=C:\Users\Dell\OneDrive\Documents\Infosys_Internship\docstring_generator\Pydoc_generator\backend\venv39
 
 if not defined PROMPT set PROMPT=$P$G
 

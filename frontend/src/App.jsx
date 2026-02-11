@@ -4,6 +4,7 @@ import {Chart as ChartJS,CategoryScale,LinearScale,BarElement,Title,Tooltip,Lege
 } from "chart.js";
 import "./style.css";
 import {  useEffect } from "react";
+import Sidebar from "./components/Sidebar";
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -29,8 +30,9 @@ function App() {
   const [moduleExpanded, setModuleExpanded] = useState(true);
   const currentUser = localStorage.getItem("username");
   const [userFiles, setUserFiles] = useState({ uploaded: [], generated: [] });
- const [isSidebarOpen, setIsSidebarOpen] = useState(false); // ← toggle state
- 
+const [isSidebarOpen, setIsSidebarOpen] = useState(false); // ← toggle state
+ const [pastedCode, setPastedCode] = useState(""); // NEW: pasted code
+
 
    // 🧩 Fetch user files whenever the user logs in or changes
   useEffect(() => {
@@ -173,19 +175,24 @@ const upanalyzeCode = async () => {
 
 
  // ---------------- Generate ----------------
-  const generateDocstrings = async () => {
-    const res = await fetch("http://localhost:5000/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename, style }),
-    });
+const generateDocstrings = async () => {
+  const res = await fetch("http://localhost:5000/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      filename, 
+      style, 
+      username: localStorage.getItem("username")  // ✅ send username
+    }),
+  });
 
-    const data = await res.json();
-    setOriginal(data.original);
-    setUpdated(data.updated);
-    setGeneratedFile(data.generatedFile);
-    setValidationResult(null);
-  };
+  const data = await res.json();
+  setOriginal(data.original);
+  setUpdated(data.updated);
+  setGeneratedFile(data.generatedFile);
+  setValidationResult(null);
+};
+
 
   // ---------------- Validate ----------------
   const validateDocstrings = async () => {
@@ -220,26 +227,8 @@ const downloadFile = (filename) => {
     window.location.href = "/"; // go to Login
   };
 
-function Sidebar({ currentUser, onSelectFile }) {
-  const [userFiles, setUserFiles] = useState({ uploaded: [], generated: [] });
 
-  useEffect(() => {
-    if (!currentUser) return;
 
-    const fetchFiles = async () => {
-      const res = await fetch(`http://localhost:5000/user_files/${currentUser}`);
-      const data = await res.json();
-      setUserFiles(data);
-    };
-
-    fetchFiles();
-  }, [currentUser]);
-};
-
-  
-const toggleSidebar = () => {
-  setIsSidebarOpen((prev) => !prev);
-};
 
 
 
@@ -265,7 +254,7 @@ const toggleSidebar = () => {
            <button onClick={validateDocstrings} disabled={!updatedcoverage}>
             Validate (PEP 257)
           </button>
-
+ <button onClick={() => setIsSidebarOpen(true)}>View Files</button>
           <button onClick={() => downloadFile(generatedFile)} disabled={!generatedFile}>
   Download File
 </button>
@@ -301,7 +290,13 @@ const toggleSidebar = () => {
         </div>
 
               </div>
-             
+             <Sidebar 
+  isOpen={isSidebarOpen} 
+  onClose={() => setIsSidebarOpen(false)} 
+  currentUser={currentUser} 
+  onSelectFile={(file) => setFilename(file)} 
+/>
+
              
               {tree.length > 0 && (
               
