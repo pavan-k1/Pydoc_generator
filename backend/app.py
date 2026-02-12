@@ -26,7 +26,7 @@ os.makedirs(GENERATED_FOLDER, exist_ok=True)
 db_config = {
     "host": "localhost",
     "user": "root",
-    "password": "m?PES@23",
+    "password": "ENTER YOU DATABASE PASSWORD HERE",
     "database": "pydoc_generator"
 }
 
