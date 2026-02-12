@@ -28,13 +28,11 @@ This project combines **Python backend analysis** with a **React-based frontend*
 
 ## Features
 
-* ✅ Automatic docstring generation for Python scripts
-* ✅ Support for functions, classes, and methods
-* ✅ Docstring coverage visualization with charts
-* ✅ Validation of existing docstrings
-* ✅ User-friendly React frontend with modern UI
-* ✅ File upload, storage, and management
-* ✅ Detailed step-by-step analysis for each code node
+* Automatic docstring generation for Python scripts
+* Support for functions, classes, and methods
+* Docstring coverage visualization with charts
+* Validation of existing docstrings
+* User-friendly React frontend with modern UI
 
 ---
 
@@ -45,8 +43,10 @@ Pydoc_generator/
 │
 ├── backend/
 │   ├── app.py                  # Main Flask app
-│   ├── main.py                 # Core analysis and docstring generation logic
+│   ├── inserter.py             # Docstring insertion logic into the code
 │   ├── parsor.py               # Python AST-based node extraction
+|   ├── validator.py            #validating pep257 using pydocstyle
+|   ├── generator.py            #complete docstring generation logic
 │   ├── doc_report.py           # Docstring coverage analysis
 │   ├── venv39/                 # Python virtual environment
 │   └── requirements.txt        # Python dependencies
@@ -55,18 +55,23 @@ Pydoc_generator/
 │   ├── src/
 │   │   ├── App.jsx             # Main React app
 │   │   ├── components/
-│   │   │   ├── Navbar.jsx
-│   │   │   ├── Footer.jsx
-│   │   │   ├── FileUpload.jsx
-│   │   │   ├── NodeList.jsx
-│   │   │   ├── CodeDisplay.jsx
-│   │   │   ├── CoverageBar.jsx
-│   │   │   └── ValidationMessage.jsx
-│   │   └── style.css
+│   │   │   ├── Sidebar.jsx
+│   │   │   ├── sidebar.css
+│   │   ├── main.jsx             # Main React app
+│   │   ├── Home.jsx             # Main React app
+│   │   ├── home.css             # Main React app
+│   │   ├── Login.jsx             # Main React app
+│   │   ├── Login.css             # Main React app
+│   │   │── style.css  
+│   │    
+│   │     
+│   │     
+│   │      
+│   │   
 │   └── package.json
 │
 ├── README.md
-└── .gitignore
+└── LICENCE
 ```
 
 ---
