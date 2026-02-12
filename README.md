@@ -19,9 +19,6 @@ This project combines **Python backend analysis** with a **React-based frontend*
 * [Node Extraction](#node-extraction)
 * [Docstring Generation](#docstring-generation)
 * [Validation & Coverage](#validation--coverage)
-* [Screenshots](#screenshots)
-* [Future Enhancements](#future-enhancements)
-* [Contributing](#contributing)
 * [License](#license)
 
 ---
