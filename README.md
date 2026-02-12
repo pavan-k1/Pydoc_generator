@@ -29,9 +29,10 @@ This project combines **Python backend analysis** with a **React-based frontend*
 ## Features
 
 * Automatic docstring generation for Python scripts
-* Support for functions, classes, and methods
+* Support for whole module ,functions, classes
 * Docstring coverage visualization with charts
 * Validation of existing docstrings
+* User can download the generated file 
 * User-friendly React frontend with modern UI
 
 ---
@@ -174,10 +175,10 @@ The Pydoc Generator works in **three main steps**:
 
   * **Navbar & Footer:** For navigation and branding
   * **FileUpload:** Drag-and-drop file upload functionality
-  * **NodeList:** Lists all detected code nodes
+  * **NodeList:** Lists all detected code nodes(like whole module,classes,functions inside classes and standalone functions)
   * **CodeDisplay:** Side-by-side original code and generated docstrings
-  * **CoverageBar:** Displays docstring coverage per file
-  * **ValidationMessage:** Shows warnings or errors for docstrings
+  * **CoverageBar:** Displays docstring coverage per node
+  * **ValidationMessage:** Shows warnings or errors for docstrings according the validation check of pep257(pydocstyle)
 
 * Styling:
 
@@ -188,20 +189,24 @@ The Pydoc Generator works in **three main steps**:
 
 ## Backend Details
 
-* Built using **Flask**
+* Built using **python** and integrated with frontend using **flask**
 
 * Handles:
 
   * File uploads and secure storage
   * Python code analysis
   * Docstring generation
+  * Validation using pep257(pydocstyle)
   * Returning results as JSON to frontend
 
 * Key Modules:
-
+  *`main.py  `: entry point of the backend contains analyze_and_generate function that calls all other functions to do all the work.
   * `parsor.py`: Extracts Python AST nodes
-  * `main.py`: Generates docstrings for extracted nodes
+  * `generator.py`: Generates docstrings for extracted nodes
   * `doc_report.py`: Calculates docstring coverage
+  * `validator.py  `: validates the docstring using pep257(pydocstyle validator)
+  * `inserter.py  `: inserts the docstring into the original code and make it code with docstrings
+  * `app.py  `: used to create flask endpoints to integrate the backend python code with the frontend
 
 ---
 
@@ -227,6 +232,14 @@ The Pydoc Generator works in **three main steps**:
 
 ---
 
+## Docstring Generation
+
+* Utilizes google generativeai:
+  * calls google generativeai api to generate docstrings and as a fallback calls GLM:4.7-Cerebras to generate the docstrings
+  * handles all styles like google,numpy,restructuredText(rest)
+  * handles all the edge cases like if the style is not provided by the user then the default style is google and if there is existing docstring in the node then checks whether it is        pep257 compliant or not if it is then no need for generation otherwise generate a new docstring.
+  * Generates a structured JSON for frontend consumption
+---
 ## Validation & Coverage
 
 * **Coverage analysis** identifies:
@@ -234,7 +247,7 @@ The Pydoc Generator works in **three main steps**:
   * Functions or methods without docstrings
   * Classes without docstrings
 * Coverage is visualized using **bar charts** (react-chartjs-2)
-* Validation messages highlight missing or incomplete docstrings
+
 
 ---
 
@@ -244,10 +257,3 @@ This project is licensed under the MIT License.
 See [LICENSE](LICENSE) for details.
 
 ---
-
-## Acknowledgements
-
-* Inspired by Python's `pydoc` module
-* ReactJS & Flask communities
-* Chart.js for visualization
-* Open-source contributions for AST parsing and code analysis
