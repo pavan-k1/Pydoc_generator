@@ -1,4 +1,4 @@
-# 🐍 Pydoc Generator
+# Pydoc Generator
 
 Pydoc Generator is an advanced Python documentation generator designed to automate the creation of docstrings for Python code. It helps developers maintain high-quality, standardized documentation effortlessly by analyzing source code, extracting functions, classes, and methods, and generating detailed docstrings automatically.
 
