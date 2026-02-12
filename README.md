@@ -75,13 +75,14 @@ Pydoc_generator/
 ---
 
 ## Installation
-
-### Backend (Python)
-
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/yourusername/pydoc-generator.git
+```
+### Backend (Python)
+
+```bash
 cd Pydoc_generator/backend
 ```
 
