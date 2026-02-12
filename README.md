@@ -227,38 +227,6 @@ The Pydoc Generator works in **three main steps**:
 
 ---
 
-## Docstring Generation
-
-* Generates **PEP-257-compliant docstrings**:
-
-  * For functions:
-
-    ```python
-    """
-    Summary of the function.
-
-    Parameters:
-        param1 (type): Description
-        param2 (type): Description
-
-    Returns:
-        return_type: Description
-    """
-    ```
-  * For classes:
-
-    ```python
-    """
-    Summary of the class.
-
-    Attributes:
-        attribute1 (type): Description
-        attribute2 (type): Description
-    """
-    ```
-
----
-
 ## Validation & Coverage
 
 * **Coverage analysis** identifies:
@@ -267,32 +235,6 @@ The Pydoc Generator works in **three main steps**:
   * Classes without docstrings
 * Coverage is visualized using **bar charts** (react-chartjs-2)
 * Validation messages highlight missing or incomplete docstrings
-
----
-
-## Screenshots
-
-> Add screenshots here to showcase the frontend interface, file upload, code display, and coverage charts.
-
----
-
-## Future Enhancements
-
-* Add **docstring editing directly in the frontend**
-* Support **multi-language code parsing**
-* Generate **HTML or PDF reports** for documentation
-* Integrate **GitHub repository scanning**
-* AI-assisted **docstring improvement suggestions**
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/awesome-feature`)
-3. Commit your changes (`git commit -m 'Add awesome feature'`)
-4. Push to the branch (`git push origin feature/awesome-feature`)
-5. Open a pull request
 
 ---
 
