@@ -2,7 +2,7 @@ import google.generativeai as genai
 from models import FunctionInfo, ClassInfo, Parameter
 
 def generate_docstring(code_segment, style,node_type,existing_docstring=None):
-    genai.configure(api_key="AIzaSyBVGnCZOmpXQ7idtwB0O3YkUiX07PuZqck")
+    genai.configure(api_key="eNTER YOUR API KEY HERE")
     model = genai.GenerativeModel("gemini-2.5-flash")
 
     Styles = {
