@@ -1,5 +1,5 @@
 import google.generativeai as genai
-from models import FunctionInfo, ClassInfo, Parameter
+
 
 def generate_docstring(code_segment, style,node_type,existing_docstring=None):
     genai.configure(api_key="AIzaSyBVGnCZOmpXQ7idtwB0O3YkUiX07PuZqck")
@@ -87,9 +87,45 @@ def generate_docstring(code_segment, style,node_type,existing_docstring=None):
        {code_segment}
       '''     
 
+     
+    try:
+        import requests
+
+        headers = {
+            "Authorization": f"Bearer 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"
+        }
+
+        API_URL = "https://router.huggingface.co/v1/chat/completions"
+
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            return response
+
+        response = query({
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "model": "zai-org/GLM-4.7:cerebras"
+        })
+
+        if response.status_code == 200:
+            result = response.json()
+            if "choices" in result and result["choices"]:
+                return result["choices"][0]["message"]["content"].strip()
+            else:
+                print("Unexpected HF response:", result)
+        else:
+            print("HF API Error:", response.text)
+
+    except Exception as hf_error:
+        print("HuggingFace fallback failed:", hf_error)
     try:
         response = model.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
         print("Gemini has some problem:", e)
         return "There is some problem Hence,Docstring generation failed."
+

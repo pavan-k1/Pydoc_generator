@@ -9,13 +9,14 @@ import Sidebar from "./components/Sidebar";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+
 function App() {
   const [file, setFile] = useState(null);
   const [filename, setFilename] = useState("");
   const [generatedFile, setGeneratedFile] = useState("");
 
-  const [nodes, setNodes] = useState([]); // flat list (charts)
-  const [tree, setTree] = useState([]);   // ✅ hierarchy list
+  const [nodes, setNodes] = useState([]); 
+  const [tree, setTree] = useState([]);   
 
   const [expandedClasses, setExpandedClasses] = useState({});
   const [style, setStyle] = useState("google");
@@ -30,11 +31,11 @@ function App() {
   const [moduleExpanded, setModuleExpanded] = useState(true);
   const currentUser = localStorage.getItem("username");
   const [userFiles, setUserFiles] = useState({ uploaded: [], generated: [] });
-const [isSidebarOpen, setIsSidebarOpen] = useState(false); // ← toggle state
- const [pastedCode, setPastedCode] = useState(""); // NEW: pasted code
+const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+ const [pastedCode, setPastedCode] = useState(""); 
 
 
-   // 🧩 Fetch user files whenever the user logs in or changes
+   
   useEffect(() => {
     if (!currentUser) return;
 
@@ -104,13 +105,18 @@ setUserFiles(fileData);
 
   setBarData({
     labels,
-    datasets: [
-      {
-        label: "Docstring Coverage %",
-        data: percentages,
-        backgroundColor: "rgba(33, 74, 187, 0.6)",
-      },
-    ],
+datasets: [
+  {
+    label: "Docstring Coverage %",
+    data: percentages,
+    backgroundColor: "rgba(0, 198, 255, 0.8)",  
+    borderColor: "rgba(0, 198, 255, 1)",
+    borderWidth: 2,
+    borderRadius: 10,
+    hoverBackgroundColor: "rgba(255, 215, 0, 0.9)",
+  },
+],
+
   });
 };
 
@@ -137,13 +143,18 @@ const upanalyzeCode = async () => {
 
   upsetBarData({
     labels,
-    datasets: [
-      {
-        label: "Docstring Coverage %",
-        data: percentages,
-        backgroundColor: "rgba(33, 74, 187, 0.6)",
-      },
-    ],
+datasets: [
+  {
+    label: "Docstring Coverage %",
+    data: percentages,
+    backgroundColor: "rgba(0, 198, 255, 0.8)",   // cyan-blue glow
+    borderColor: "rgba(0, 198, 255, 1)",
+    borderWidth: 2,
+    borderRadius: 10,
+    hoverBackgroundColor: "rgba(255, 215, 0, 0.9)", // golden hover
+  },
+],
+
   });
 };
 
@@ -194,7 +205,7 @@ const generateDocstrings = async () => {
 };
 
 
-  // ---------------- Validate ----------------
+
   const validateDocstrings = async () => {
     const res = await fetch("http://localhost:5000/validate", {
       method: "POST",
@@ -205,7 +216,7 @@ const generateDocstrings = async () => {
     setValidationResult(data);
   };
 
-  // ---------------- Copy ----------------
+ 
   const handleCopy = () => {
     navigator.clipboard.writeText(updated);
     setCopied(true);
@@ -217,14 +228,14 @@ const downloadFile = (filename) => {
   window.open(url, "_blank");
 };
 
-  // 🧭 Navigation
+ 
   const goHome = () => {
-    window.location.href = "/home"; // go back to Home
+    window.location.href = "/home"; 
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated"); // clear login info
-    window.location.href = "/"; // go to Login
+    localStorage.removeItem("isAuthenticated"); 
+    window.location.href = "/"; 
   };
 
 
@@ -473,8 +484,8 @@ const downloadFile = (filename) => {
   >
     <h3>
       {validationResult.passed
-        ? "✅ PEP 257 Validation Passed"
-        : "❌ PEP 257 Validation Failed"}
+        ? "HURRAH! ALL THE DOCSTRINGS HAVE PASSED PEP257(PYDOCSTYLE VALIDATION)"
+        : "OOPS! THERE ARE SOME MINOR ERRORS ACCORDING TO PEP257(PYDOCSTYLE VALIDATION)"}
     </h3>
 
     {validationResult.message && (

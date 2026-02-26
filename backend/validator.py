@@ -1,9 +1,7 @@
-import ast
 import google.generativeai as genai
 import ast
 import subprocess
 import sys
-import os
 
 
 
@@ -25,7 +23,7 @@ def validate_pep257(filename: str):
     if not output:
         return {
             "passed": True,
-            "message": "✅ All docstrings are valid according to PEP 257"
+            "message": "All docstrings are valid according to PEP 257"
         }
 
     return {

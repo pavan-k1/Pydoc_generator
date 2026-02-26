@@ -62,8 +62,6 @@ const Login = () => {
             Login
           </button>
         </form>
-
-        {/* ✅ Register Link Added */}
         <p style={{ marginTop: "15px" }}>
           Don’t have an account?{" "}
           <span

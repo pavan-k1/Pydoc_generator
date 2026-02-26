@@ -11,7 +11,7 @@ from validator import validate_pep257
 
 import mysql.connector
 
-# -------------------- Flask Setup --------------------
+
 app = Flask(__name__)
 CORS(app)
 bcrypt = Bcrypt(app)
@@ -22,7 +22,7 @@ GENERATED_FOLDER = os.path.join(BASE_DIR, "generated")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(GENERATED_FOLDER, exist_ok=True)
 
-# -------------------- MySQL Config --------------------
+
 db_config = {
     "host": "localhost",
     "user": "root",
@@ -33,7 +33,7 @@ db_config = {
 def get_db_connection():
     return mysql.connector.connect(**db_config)
 
-# -------------------- USER AUTH --------------------
+
 @app.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -81,7 +81,7 @@ def login():
     token = secrets.token_hex(16)
     return jsonify({"token": token, "username": username})
 
-# -------------------- FILE UPLOAD --------------------
+
 @app.route("/upload", methods=["POST"])
 def upload_file():
     file = request.files.get("file")
@@ -121,7 +121,7 @@ def get_user_files(username):
     return jsonify({"uploaded": uploaded, "generated": generated})
 
 
-# -------------------- ANALYZE --------------------
+
 @app.route("/analyze", methods=["POST"])
 def analyze_code():
     data = request.get_json()
@@ -150,7 +150,7 @@ def upanalyze_code():
     return jsonify({"nodes": result, "tree": nod, "coverage": total_coverage})
 
 
-# -------------------- GENERATE DOCSTRINGS --------------------
+
 @app.route("/generate", methods=["POST"])
 def generate_docstrings():
     data = request.get_json()
@@ -159,16 +159,13 @@ def generate_docstrings():
     username = data.get("username")  # <- get username from request
 
     original_path = os.path.join(UPLOAD_FOLDER, filename)
-
-    # Add timestamp to avoid filename collisions
-    
    
     generated_filename = f"generated_{filename}"
     generated_path = os.path.join(GENERATED_FOLDER, generated_filename)
 
     shutil.copy(original_path, generated_path)
 
-    # Generate docstrings
+   
     analyze_and_generate(generated_path, style)
 
     with open(original_path, "r", encoding="utf-8") as f:
@@ -176,7 +173,7 @@ def generate_docstrings():
     with open(generated_path, "r", encoding="utf-8") as f:
         updated_code = f.read()
 
-    # ✅ Save generated file in MySQL
+
     if username:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -196,7 +193,7 @@ def generate_docstrings():
 
 
 
-# -------------------- VALIDATE --------------------
+
 @app.route("/validate", methods=["POST"])
 def validate_docstrings():
     data = request.get_json()
@@ -215,12 +212,12 @@ def validate_docstrings():
     })
 
 
-# -------------------- DOWNLOAD --------------------
+
 @app.route("/download/<filename>")
 def download_file(filename):
     filepath = os.path.join(GENERATED_FOLDER, filename)
     return send_file(filepath, as_attachment=True, download_name=filename)
 
-# -------------------- RUN SERVER --------------------
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True,use_reloader=False  )
