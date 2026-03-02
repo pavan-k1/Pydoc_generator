@@ -32,8 +32,9 @@ function App() {
   const currentUser = localStorage.getItem("username");
   const [userFiles, setUserFiles] = useState({ uploaded: [], generated: [] });
 const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
- const [pastedCode, setPastedCode] = useState(""); 
-
+const [pastedCode, setPastedCode] = useState("");
+const [isEditing, setIsEditing] = useState(false);
+const [editedCode, setEditedCode] = useState("");
 
    
   useEffect(() => {
@@ -52,35 +53,87 @@ const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 const moduleName = "Whole Module";
 
-  const uploadFile = async () => {
+//   const uploadFile = async () => {
+//     const formData = new FormData();
+//     formData.append("file", file);
+
+// const username = localStorage.getItem("username");
+// const res = await fetch(`http://localhost:5000/upload?username=${username}`, {
+//   method: "POST",
+//   body: formData,
+// });
+
+
+//     const data = await res.json();
+    
+//     setFilename(data.filename);
+//     const resFiles = await fetch(`http://localhost:5000/user_files/${username}`);
+// const fileData = await resFiles.json();
+// setUserFiles(fileData);
+
+//     setNodes([]);
+//     setTree([]);
+//     setExpandedClasses({});
+//     setcurrCoverage(null);
+//     setupdatedCoverage(null);
+//     setBarData(null);
+//     upsetBarData(null);
+//     setModuleExpanded(false);
+
+//   };
+
+const uploadFile = async () => {
+  const username = localStorage.getItem("username");
+
+  // 🔹 Case 1: Normal file upload
+  if (file) {
     const formData = new FormData();
     formData.append("file", file);
 
-const username = localStorage.getItem("username");
-const res = await fetch(`http://localhost:5000/upload?username=${username}`, {
-  method: "POST",
-  body: formData,
-});
-
+    const res = await fetch(
+      `http://localhost:5000/upload?username=${username}`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     const data = await res.json();
-    
     setFilename(data.filename);
-    const resFiles = await fetch(`http://localhost:5000/user_files/${username}`);
-const fileData = await resFiles.json();
-setUserFiles(fileData);
+  }
 
-    setNodes([]);
-    setTree([]);
-    setExpandedClasses({});
-    setcurrCoverage(null);
-    setupdatedCoverage(null);
-    setBarData(null);
-    upsetBarData(null);
-    setModuleExpanded(false);
+  // 🔹 Case 2: Pasted code upload
+  else if (pastedCode.trim()) {
+    const res = await fetch("http://localhost:5000/paste_code", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: pastedCode,
+        username: username,
+      }),
+    });
 
-  };
+    const data = await res.json();
+    setFilename(data.filename);
+  }
 
+  // Refresh user files
+  const resFiles = await fetch(
+    `http://localhost:5000/user_files/${username}`
+  );
+  const fileData = await resFiles.json();
+  setUserFiles(fileData);
+
+  // Reset UI states
+  setNodes([]);
+  setTree([]);
+  setExpandedClasses({});
+  setcurrCoverage(null);
+  setupdatedCoverage(null);
+  setBarData(null);
+  upsetBarData(null);
+  setModuleExpanded(false);
+};
 
   
 
@@ -200,21 +253,60 @@ const generateDocstrings = async () => {
   const data = await res.json();
   setOriginal(data.original);
   setUpdated(data.updated);
+  setEditedCode(data.updated);   // 🔥 important
+  setIsEditing(false);           // reset editing
   setGeneratedFile(data.generatedFile);
+  await fetch("http://localhost:5000/save_project", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    username: localStorage.getItem("username"),
+    filename: data.generatedFile,
+    original: data.original,
+    updated: data.updated,
+    tree: data.tree,
+    nodes: data.nodes,
+    coverage: data.coverage,
+    style,
+  }),
+});
   setValidationResult(null);
 };
 
 
 
-  const validateDocstrings = async () => {
-    const res = await fetch("http://localhost:5000/validate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename: generatedFile, type: "generated" }),
-    });
-    const data = await res.json();
-    setValidationResult(data);
-  };
+const validateDocstrings = async () => {
+
+  // 🔥 STEP 1: Save latest edited version FIRST
+  const saveRes = await fetch("http://localhost:5000/save_edit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      filename: generatedFile,
+      content: updated,
+    }),
+  });
+
+  const saveData = await saveRes.json();
+
+  if (!saveData.success) {
+    alert("Error saving file before validation");
+    return;
+  }
+
+  // 🔥 STEP 2: THEN validate
+  const res = await fetch("http://localhost:5000/validate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      filename: generatedFile,
+      type: "generated",
+    }),
+  });
+
+  const data = await res.json();
+  setValidationResult(data);
+};
 
  
   const handleCopy = () => {
@@ -238,7 +330,49 @@ const downloadFile = (filename) => {
     window.location.href = "/"; 
   };
 
+const saveEditedCode = async () => {
+  const res = await fetch("http://localhost:5000/save_edit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      filename: generatedFile,
+      content: updated,
+    }),
+  });
 
+  const data = await res.json();
+
+  if (data.success) {
+    alert("File updated successfully!");
+  } else {
+    alert("Error saving file");
+  }
+};
+
+const pasteCodeToFile = async () => {
+  if (!pastedCode.trim()) {
+    alert("Paste some Python code first!");
+    return;
+  }
+
+  const res = await fetch("http://localhost:5000/paste_code", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      code: pastedCode,
+      username: localStorage.getItem("username"),
+    }),
+  });
+
+  const data = await res.json();
+
+  if (data.filename) {
+    setFilename(data.filename);
+    alert("File created successfully!");
+  } else {
+    alert("Error creating file");
+  }
+};
 
 
 
@@ -250,11 +384,11 @@ const downloadFile = (filename) => {
 
 
             <nav className="navbar">
-             Pydoc Generator
+           <div className="logo">PyDoc Generator</div>
               
               <div className="one">
 <button onClick={goHome}> Home</button>
-                              <button onClick={uploadFile} disabled={!file}>Upload</button>
+<button onClick={uploadFile} disabled={!file && !pastedCode.trim()}> Upload</button>
                 <button onClick={() => {analyzeCode()}} disabled={!filename}>Analyze</button>
                           <button onClick={generateDocstrings} disabled={!nodes.length}>
             Generate Docstrings
@@ -284,7 +418,17 @@ const downloadFile = (filename) => {
                   accept=".py"
                   onChange={(e) => setFile(e.target.files[0])}
                 />
-                
+                <div className="card">
+  <h3>Or Paste Python Code</h3>
+
+  <textarea
+    value={pastedCode}
+    onChange={(e) => setPastedCode(e.target.value)}
+    placeholder="Paste your Python code here..."
+    className="editable-code"
+    style={{ height: "200px" }}
+  />
+</div>
         <div className="onepart">
           <h3>Docstring Style</h3>
           <select value={style} onChange={(e) => setStyle(e.target.value)}>
@@ -305,7 +449,21 @@ const downloadFile = (filename) => {
   isOpen={isSidebarOpen} 
   onClose={() => setIsSidebarOpen(false)} 
   currentUser={currentUser} 
-  onSelectFile={(file) => setFilename(file)} 
+ onSelectFile={async (file) => {
+  const username = localStorage.getItem("username");
+
+  const res = await fetch(
+    `http://localhost:5000/load_file_content/${username}/${file}`
+  );
+
+  const data = await res.json();
+
+  setOriginal(data.original);
+  setUpdated(data.updated);
+  setEditedCode(data.updated);
+  setGeneratedFile(file);
+  setIsEditing(false);
+}}
 />
 
              
@@ -429,19 +587,63 @@ const downloadFile = (filename) => {
               <pre>{original}</pre>
             </div>
 
-            <div className="card code-card">
-              <div className="card-header">
-                <h3>Code with Docstrings</h3>
-                <div className="copy-wrapper" onClick={handleCopy}>
-                  📋
-                  <span className="copy-tooltip">
-                    {copied ? "Copied!" : "Copy"}
-                  </span>
-                </div>
-              </div>
-              <pre>{updated}</pre>
+<div className="card code-card">
+  <div className="card-header">
+    <h3>Code with Docstrings</h3>
+
+    {!isEditing ? (
+      <button
+        className="edit-btn"
+        onClick={() => setIsEditing(true)}
+      >
+        Edit
+      </button>
+    ) : (
+      <button
+        className="save-btn"
+        onClick={async () => {
+          const res = await fetch("http://localhost:5000/save_edit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              filename: generatedFile,
+              content: editedCode,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (data.success) {
+            setUpdated(editedCode);
+            setIsEditing(false);
+          } else {
+            alert("Error saving file");
+          }
+        }}
+      >
+        Save
+      </button>
+    )}
+
+    <div className="copy-wrapper" onClick={handleCopy}>
+      📋
+      <span className="copy-tooltip">
+        {copied ? "Copied!" : "Copy"}
+      </span>
+    </div>
+  </div>
+
+  {!isEditing ? (
+    <pre>{updated}</pre>
+  ) : (
+    <textarea
+      value={editedCode}
+      onChange={(e) => setEditedCode(e.target.value)}
+      className="editable-code"
+    />
+  )}
+</div>
             </div>
-          </div>
         )}
       {upbarData && (
                 <div className="card">

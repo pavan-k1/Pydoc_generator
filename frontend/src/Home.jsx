@@ -20,7 +20,8 @@ const Home = () => {
 
   return (
     <div>
-      {/* Navbar */}
+
+      {/* ================= NAVBAR ================= */}
       <nav className="navbar first">
         <div className="logo">PyDoc Generator</div>
         <div>
@@ -28,109 +29,222 @@ const Home = () => {
           <button onClick={() => handleNavClick("docstring")}>
             Docstring Generator
           </button>
-          <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
-            Logout
-          </button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       </nav>
 
-      {/* Home Page Header */}
+      {/* ================= MAIN CONTAINER ================= */}
       <div className="container">
-        <div
-          className="card header-card"
-          style={{ marginTop: "40px", textAlign: "center" }}
-        >
-          <h1>Welcome to PyDoc Generator!</h1>
-          <p style={{ color: "var(--text-muted)", fontSize: "1.1rem" }}>
-            PyDoc Generator helps developers automatically create structured,
-            PEP 257-compliant Python docstrings for functions, classes, and modules.
-            Improve code readability, maintainability, and documentation standards
-            with intelligent AI-powered generation.
+
+        {/* ================= HERO SECTION ================= */}
+        <div className="card">
+          <h1>PyDoc Generator</h1>
+          <p>
+            Intelligent Python Documentation Automation System
+          </p>
+          <p>
+            Automatically generate structured, PEP 257-compliant Python
+            docstrings for functions, classes, and modules. Improve
+            readability, enforce documentation standards, and accelerate
+            development workflows using automated code analysis.
           </p>
         </div>
 
-        {/* Features Section */}
-        <h2 style={{ marginTop: "50px", textAlign: "center" }}>
-          Why Use PyDoc Generator?
-        </h2>
-        <div className="cards-container">
-          <div className="card feature-card">
-            <h3>Save Development Time</h3>
-            <p>
-              Writing documentation manually can slow down development.
-              PyDoc Generator analyzes your Python code and produces complete,
-              well-structured docstrings instantly — reducing repetitive work
-              and increasing productivity.
-            </p>
-          </div>
+        {/* ================= WHAT IS THIS ================= */}
+        <div className="card">
+          <h2 className="features-title">What is PyDoc Generator?</h2>
+          <p>
+            PyDoc Generator is a full-stack web application designed to analyze
+            Python source code and automatically generate meaningful,
+            structured documentation. It extracts functions, classes,
+            parameters, return types, and generates high-quality docstrings
+            in standardized formats.
+          </p>
+        </div>
 
-          <div className="card feature-card">
-            <h3>Improve Code Maintainability</h3>
-            <p>
-              Clear documentation makes it easier for teams to understand,
-              modify, and scale codebases. Generated docstrings include
-              parameter descriptions, return types, and purpose explanations,
-              ensuring long-term maintainability.
-            </p>
-          </div>
+        {/* ================= KEY FEATURES ================= */}
+        <div className="card">
+          <h2 className="features-title">Key Features</h2>
 
-          <div className="card feature-card">
-            <h3>Multiple Documentation Styles</h3>
-            <p>
-              Supports Google Style, NumPy Style, and reStructuredText (reST).
-              Maintain consistent documentation standards across projects
-              and align with industry best practices.
-            </p>
-          </div>
+          <div className="features-grid">
 
-          <div className="card feature-card">
-            <h3>PEP 257 Compliance</h3>
-            <p>
-              Ensures that generated docstrings follow PEP 257 conventions,
-              including proper summaries, formatting, and structure. This helps
-              maintain professional Python documentation standards.
-            </p>
+            <div className="feature-item">
+              <h3>Automated Code Analysis</h3>
+              <p>
+                Uses Python AST parsing to deeply understand code structure,
+                function signatures, and class definitions.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Multiple Documentation Styles</h3>
+              <p>
+                Supports Google Style, NumPy Style, and reStructuredText (reST)
+                formats.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>PEP 257 Compliance</h3>
+              <p>
+                Ensures proper summary lines, spacing rules, and structured
+                formatting according to official Python documentation standards.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Validation Engine</h3>
+              <p>
+                Checks documentation completeness and highlights missing
+                parameter descriptions or return explanations.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>File Upload Support</h3>
+              <p>
+                Upload full Python files or paste code directly into the system
+                for analysis.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Download Updated Code</h3>
+              <p>
+                Automatically inject generated docstrings into your source code
+                and download the updated file instantly.
+              </p>
+            </div>
+
           </div>
         </div>
 
-        {/* How to Use Section */}
-        <h2 style={{ marginTop: "50px", textAlign: "center" }}>
-          How to Use
-        </h2>
-        <div className="cards-container">
-          <div className="card usage-card">
-            <h3>Upload Python File</h3>
-            <p>
-              Select and upload your Python source file. The system parses
-              functions, classes, and modules to understand their structure
-              before generating documentation.
-            </p>
-          </div>
+        {/* ================= HOW IT WORKS ================= */}
+        <div className="card">
+          <h2 className="features-title">How It Works</h2>
 
-          <div className="card usage-card">
-            <h3>Generate Docstrings</h3>
-            <p>
-              Choose your preferred documentation style and click Generate.
-              The AI analyzes function parameters, return statements, and
-              logic to create meaningful and accurate docstrings.
-            </p>
-          </div>
+          <div className="features-grid">
 
-          <div className="card usage-card">
-            <h3>Review, Validate & Save</h3>
-            <p>
-              Review generated docstrings, check PEP 257 validation results,
-              and integrate them directly into your project to maintain
-              professional documentation standards.
-            </p>
+            <div className="feature-item">
+              <h3>1. Upload Code</h3>
+              <p>
+                Provide your Python source file or paste your code into the
+                editor.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>2. Choose Documentation Style</h3>
+              <p>
+                Select your preferred documentation format based on your
+                project standards.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>3. Analyze & Generate</h3>
+              <p>
+                The backend parses your code using AST and generates
+                context-aware docstrings.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>4. Review & Download</h3>
+              <p>
+                Validate generated documentation and download your updated
+                Python file.
+              </p>
+            </div>
+
           </div>
         </div>
+
+        {/* ================= TECHNOLOGY STACK ================= */}
+        <div className="card">
+          <h2 className="features-title">Technology Stack</h2>
+
+          <div className="features-grid">
+
+            <div className="feature-item">
+              <h3>Frontend</h3>
+              <p>
+                Built with React.js for a dynamic and responsive user
+                experience.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Backend</h3>
+              <p>
+                Developed using Flask (Python) to handle file processing,
+                parsing, and documentation logic.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Parsing Engine</h3>
+              <p>
+                Utilizes Python’s Abstract Syntax Tree (AST) module for
+                accurate code analysis.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Storage</h3>
+              <p>
+                Stores metadata and generated documentation for efficient
+                tracking and reuse.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        {/* ================= BENEFITS ================= */}
+        <div className="card">
+          <h2 className="features-title">Benefits</h2>
+
+          <div className="features-grid">
+
+            <div className="feature-item">
+              <h3>Improved Code Readability</h3>
+              <p>
+                Makes projects easier to understand and maintain.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Faster Development</h3>
+              <p>
+                Saves time by automating repetitive documentation tasks.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Team Collaboration</h3>
+              <p>
+                Enforces consistent documentation standards across teams.
+              </p>
+            </div>
+
+            <div className="feature-item">
+              <h3>Professional Standards</h3>
+              <p>
+                Ensures high-quality, production-ready documentation.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
       </div>
 
-      {/* Footer */}
+      {/* ================= FOOTER ================= */}
       <footer className="footer">
-        © {new Date().getFullYear()} PyDoc Generator | Intelligent Documentation System
+        © {new Date().getFullYear()} PyDoc Generator. All rights reserved.
       </footer>
+
     </div>
   );
 };

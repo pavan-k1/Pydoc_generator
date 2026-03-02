@@ -4,7 +4,10 @@ import sys
 import os
 
 def clean_docstring(docstring: str) -> str:
-    docstring = docstring.strip()
+    if not docstring:
+        docstring = "Provide functionality as described."
+
+    docstring = str(docstring).strip()
     docstring = docstring.replace("\\n", "\n")         
     docstring = docstring.replace("```python", "")    
     docstring = docstring.replace("```", "")

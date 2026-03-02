@@ -215,9 +215,97 @@ def validate_docstrings():
 
 @app.route("/download/<filename>")
 def download_file(filename):
-    filepath = os.path.join(GENERATED_FOLDER, filename)
-    return send_file(filepath, as_attachment=True, download_name=filename)
+    gen_path = os.path.join(GENERATED_FOLDER, filename)
+    upload_path = os.path.join(UPLOAD_FOLDER, filename)
 
+    if os.path.exists(gen_path):
+        return send_file(gen_path, as_attachment=True)
+
+    elif os.path.exists(upload_path):
+        return send_file(upload_path, as_attachment=True)
+
+    else:
+        return jsonify({"error": "File not found"}), 404
+
+@app.route("/save_edit", methods=["POST"])
+def save_edit():
+    data = request.get_json()
+    filename = data.get("filename")
+    content = data.get("content")
+
+    if not filename or not content:
+        return jsonify({"success": False, "error": "Missing data"}), 400
+
+    filepath = os.path.join(GENERATED_FOLDER, filename)
+
+    if not os.path.exists(filepath):
+        return jsonify({"success": False, "error": "File not found"}), 404
+
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+
+    return jsonify({"success": True})
+
+import json
+
+
+
+@app.route("/load_file_content/<username>/<filename>")
+def load_file_content(username, filename):
+
+    upload_path = os.path.join(UPLOAD_FOLDER, filename)
+    generated_path = os.path.join(GENERATED_FOLDER, filename)
+
+    original_content = ""
+    generated_content = ""
+
+    # If file exists in uploads folder
+    if os.path.exists(upload_path):
+        with open(upload_path, "r", encoding="utf-8") as f:
+            original_content = f.read()
+
+    # If file exists in generated folder
+    if os.path.exists(generated_path):
+        with open(generated_path, "r", encoding="utf-8") as f:
+            generated_content = f.read()
+
+    return jsonify({
+        "original": original_content,
+        "updated": generated_content,
+        "generatedFile": filename
+    })
+
+@app.route("/paste_code", methods=["POST"])
+def paste_code():
+    try:
+        data = request.get_json()
+        code = data.get("code")
+        username = data.get("username")
+
+        if not code or not username:
+            return jsonify({"error": "Code or username missing"}), 400
+
+        filename = f"{username}_pasted_code.py"
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(code)
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO user_files (username, filename, file_type) VALUES (%s, %s, %s)",
+            (username, filename, "uploaded")
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"filename": filename})
+
+    except Exception as e:
+        print("Paste error:", e)
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True,use_reloader=False  )
