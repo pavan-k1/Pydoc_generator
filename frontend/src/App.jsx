@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRef } from "react";
 import { Bar } from "react-chartjs-2";
 import {Chart as ChartJS,CategoryScale,LinearScale,BarElement,Title,Tooltip,Legend,
 } from "chart.js";
@@ -35,7 +36,20 @@ const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 const [pastedCode, setPastedCode] = useState("");
 const [isEditing, setIsEditing] = useState(false);
 const [editedCode, setEditedCode] = useState("");
+const analyzeRef = useRef(null);
+const generateRef = useRef(null);
+const coverageRef = useRef(null);
+const updatedCoverageRef = useRef(null);
+const validationRef = useRef(null);
 
+const scrollToSection = (ref) => {
+  if (ref.current) {
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+};
    
   useEffect(() => {
     if (!currentUser) return;
@@ -389,23 +403,49 @@ const pasteCodeToFile = async () => {
               <div className="one">
 <button onClick={goHome}> Home</button>
 <button onClick={uploadFile} disabled={!file && !pastedCode.trim()}> Upload</button>
-                <button onClick={() => {analyzeCode()}} disabled={!filename}>Analyze</button>
-                          <button onClick={generateDocstrings} disabled={!nodes.length}>
-            Generate Docstrings
-          </button>
-          <button onClick={upanalyzeCode} disabled={!generatedFile}>
-            Updated Coverage
-          </button>
-           <button onClick={validateDocstrings} disabled={!updatedcoverage}>
-            Validate (PEP 257)
-          </button>
+                <button
+  onClick={async () => {
+    await analyzeCode();
+    setTimeout(() => scrollToSection(analyzeRef), 200);
+  }}
+  disabled={!filename}
+>
+  Analyze
+</button>
+<button
+  onClick={async () => {
+    await generateDocstrings();
+    setTimeout(() => scrollToSection(generateRef), 200);
+  }}
+  disabled={!nodes.length}
+>
+  Generate Docstrings
+</button>
+<button
+  onClick={async () => {
+    await upanalyzeCode();
+    setTimeout(() => scrollToSection(updatedCoverageRef), 200);
+  }}
+  disabled={!generatedFile}
+>
+  Updated Coverage
+</button>
+<button
+  onClick={async () => {
+    await validateDocstrings();
+    setTimeout(() => scrollToSection(validationRef), 200);
+  }}
+  disabled={!updatedcoverage}
+>
+  Validate (PEP 257)
+</button>
  <button onClick={() => setIsSidebarOpen(true)}>View Files</button>
           <button onClick={() => downloadFile(generatedFile)} disabled={!generatedFile}>
   Download File
 </button>
 
           </div>
-              <button onClick={handleLogout} style={{ marginLeft: "10px" }}>
+              <button  className="logout-btn" onClick={handleLogout} style={{ marginLeft: "10px" }}>
        Logout
     </button>
             </nav>
@@ -413,11 +453,34 @@ const pasteCodeToFile = async () => {
             <div className="container" style={{ padding: 20, paddingBottom: 80 }}>
               <div className="card">
                 <h3>Select Python File</h3>
-                <input
-                  type="file"
-                  accept=".py"
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
+<div
+  className="upload-area"
+  onDragOver={(e) => e.preventDefault()}
+  onDrop={(e) => {
+    e.preventDefault();
+    const droppedFile = e.dataTransfer.files[0];
+    if (droppedFile && droppedFile.name.endsWith(".py")) {
+      setFile(droppedFile);
+    } else {
+      alert("Please upload a Python (.py) file");
+    }
+  }}
+  onClick={() => document.getElementById("fileInput").click()}
+>
+  {file ? (
+    <p>📄 {file.name}</p>
+  ) : (
+    <p>Drag & Drop Python file here or Click to Upload</p>
+  )}
+
+  <input
+    id="fileInput"
+    type="file"
+    accept=".py"
+    style={{ display: "none" }}
+    onChange={(e) => setFile(e.target.files[0])}
+  />
+</div>
                 <div className="card">
   <h3>Or Paste Python Code</h3>
 
@@ -468,7 +531,7 @@ const pasteCodeToFile = async () => {
 
              
               {tree.length > 0 && (
-              
+              <div ref={analyzeRef}>
  <div className="node-group card" >
   <div className="tree-node module" onClick={toggleModule}>
     <span className="icon">{moduleExpanded ? "" : ""}</span>
@@ -531,13 +594,13 @@ const pasteCodeToFile = async () => {
     </div>
   )}
 </div>
-
+</div>
 )}
 
 
      
                        {barData && (
-                <div className="card">
+                <div className="card" ref={coverageRef}>
         
           <h3>Docstring Coverage for module,classes and functions</h3>
                           {currcoverage !== null && (
@@ -581,7 +644,7 @@ const pasteCodeToFile = async () => {
 
         {/* Code Blocks */}
         {original && (
-          <div className="code-container">
+          <div className="code-container" ref={generateRef}>
             <div className="card code-card">
               <h3>Original Code</h3>
               <pre>{original}</pre>
@@ -589,7 +652,7 @@ const pasteCodeToFile = async () => {
 
 <div className="card code-card">
   <div className="card-header">
-    <h3>Code with Docstrings</h3>
+    <h3>Documented Code</h3>
 
     {!isEditing ? (
       <button
@@ -646,7 +709,7 @@ const pasteCodeToFile = async () => {
             </div>
         )}
       {upbarData && (
-                <div className="card">
+                <div className="card" ref={updatedCoverageRef}>
         
           <h3>Updated Docstring Coverage for module,classes and functions</h3>
                           {updatedcoverage !== null && (
@@ -679,7 +742,7 @@ const pasteCodeToFile = async () => {
       )}
      
  {validationResult && (
-  <div
+  <div ref={validationRef}
     className={`validation ${
       validationResult.passed ? "passed" : "failed"
     }`}

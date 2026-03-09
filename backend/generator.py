@@ -1,8 +1,12 @@
 import google.generativeai as genai
 import ast
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
 
 def generate_docstring(code_segment, style,node_type,existing_docstring=None):
-    genai.configure(api_key="AIzaSyDeXXCYTua-ecDjoPQkFeNvCGTHuFbxh")
+    genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
     model = genai.GenerativeModel("gemini-2.5-flash")
 
     Styles = {
@@ -95,40 +99,25 @@ def generate_docstring(code_segment, style,node_type,existing_docstring=None):
         print("There is some problem Hence,Docstring generation failed. trying hugging face fallback")
 
     try:
-        import requests
+        from groq import Groq
 
-        headers = {
-            "Authorization": f"Bearer hf_EFQEHmZAzIyskMNzMRAOfvEcDFOKEads"
-        }
+        client = Groq(api_key="Enter your API key here")
 
-        API_URL = "https://router.huggingface.co/v1/chat/completions"
-
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response
-
-        response = query({
-            "messages": [
+        response = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
                 {
                     "role": "user",
                     "content": prompt
                 }
             ],
-            "model": "zai-org/GLM-4.7-Flash:zai-org"
-        })
+            temperature=0.2
+        )
 
-        if response.status_code == 200:
-            result = response.json()
-            if "choices" in result and result["choices"]:
-                return result["choices"][0]["message"]["content"].strip()
-            else:
-                print("Unexpected HF response:", result)
-        else:
-            print("HF API Error:", response.text)
+        return response.choices[0].message.content.strip()
 
-    except Exception as hf_error:
-        print("HuggingFace fallback failed:", hf_error)
-        print("Using AST template fallback.")
+    except Exception as groq_error:
+        print("Groq fallback failed:", groq_error)
         return template_docstring_generator(code_segment, style, node_type)
 
 
@@ -142,7 +131,7 @@ def template_docstring_generator(code_segment: str, style: str, node_type: str) 
     Fully self-contained AST-based fallback docstring generator.
     Style-aware, PEP257 compliant, and guaranteed non-null output.
     """
-
+    
     # ---------------- SAFE DEFAULT ---------------- #
     DEFAULT_DOCSTRING = '''"""
 Perform the described operation.

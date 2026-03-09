@@ -3,6 +3,10 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from flask_bcrypt import Bcrypt
 import os, shutil, secrets, datetime
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from doc_report import docstring_coverage
 from parsor import extract_nodes
@@ -24,10 +28,10 @@ os.makedirs(GENERATED_FOLDER, exist_ok=True)
 
 
 db_config = {
-    "host": "localhost",
-    "user": "root",
-    "password": "ENTER YOU DATABASE PASSWORD HERE",
-    "database": "pydoc_generator"
+    "host": os.getenv("DB_HOST", "localhost"),
+    "user": os.getenv("DB_USER", "root"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME", "pydoc_generator")
 }
 
 def get_db_connection():
